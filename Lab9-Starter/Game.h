@@ -34,6 +34,7 @@ private:
 	void	drawPoint(const int t_index); // draw a black circle and the index number at the cube corner location
 	bool	checkFace(const int t_index); // find out which way the face is pointing and cull or not
 	void	setupText(); // set the default text properties
+	void    printPos();
 
 
 	sf::RenderWindow m_window; // main rendering window
@@ -41,7 +42,7 @@ private:
 	sf::VertexArray m_edges; // vertex array used to draw active edges (not culled)
 
 	sf::CircleShape m_circle; // used to indicate location of cube corners?
-	sf::Text m_letter; // used to print index of cube corner
+	sf::Text m_letter[8]; // used to print index of cube corner
 	sf::Text m_instructions; // text to display instructions
 	sf::Font m_font; // font used by application
 

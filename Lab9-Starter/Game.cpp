@@ -30,7 +30,7 @@ Game::Game()
 	m_showFace{{false} }, // sets all siz to false
 	m_angle{ PI / 36.0 }  // 5 degrees
 {
-	setupText();	
+		
 }
 /// <summary>
 /// load the font and setup the text properties
@@ -41,15 +41,73 @@ void Game::setupText()
 	{
 		std::cout << "problem with font" << std::endl;
 	}
-	m_letter.setFont(m_font);
-	m_letter.setFillColor(WHITE);
-	m_letter.setCharacterSize(10);
-	m_circle.setFillColor(BLACK);
-	m_instructions.setFont(m_font);
-	m_instructions.setFillColor(BLACK);
-	m_instructions.setCharacterSize(18);
-	m_instructions.setPosition(30, 360);
+
+	m_circle.setFillColor(BLACK); // sets the font colour
+	m_instructions.setFont(m_font); // sets the font
+	m_instructions.setFillColor(BLACK); // sets the font colour
+	m_instructions.setCharacterSize(18); // sets the font size
+	m_instructions.setPosition(30, 360); // sets the font position
 	m_instructions.setString("Press X,Y,Z to rotate clockwise \nshift for anticlockwise  \nP to print current co-ordinates");
+
+	sf::Vector2f offSet{ 195, 195 };
+
+	for (int i = 0; i < 8; i++)
+	{
+		m_letter[i].setFont(m_font); // sets the font
+		m_letter[i].setFillColor(BLACK); // sets the font colour
+		m_letter[i].setCharacterSize(10); // sets the font size
+
+		if (i == 0)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(1));  // places the number one on the black ball
+		}
+		if (i == 1)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(2)); // places the number two on the black ball
+		}
+		if (i == 2)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(3)); // places the number three on the black ball
+		}
+		if (i == 3)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(4)); // places the number four on the black ball
+		}
+		if (i == 4)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(5)); // places the number five on the black ball
+		}
+		if (i == 5)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(6)); // places the number six on the black ball
+		}
+		if (i == 6)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(7)); // places the number seven on the black ball
+		}
+		if (i == 7)
+		{
+			m_letter[i].setPosition(m_points[i] + offSet);
+			m_letter[i].setString(std::to_string(8)); // places the number eight on the black ball
+		}
+
+	}
+}
+
+void Game::printPos()
+{
+	std::cout << "the coordinates \n";
+	for (int i = 0; i < 8; i++)
+	{
+		std::cout << m_points[i].x << " " << m_points[i].y << " " << m_points[i].z << std::endl; // printing the co-ordinates
+	}
 }
 
 /// <summary>
@@ -106,13 +164,67 @@ void Game::processKeyPress(const sf::Event t_event)
 		//about z axis
 		if (t_event.key.shift)
 		{
-		// backwards
+			for (int i = 0; i < 8; i++)
+			{
+				m_points[i] = MyMatrix3::rotationZ(-m_angle) * m_points[i]; // rotates the cube backwards on the z axis
+			}
 		}
-		for (int i = 0; i < 8; i++)
+		else
 		{
-			//rotate
+			for (int i = 0; i < 8; i++)
+			{
+				m_points[i] = MyMatrix3::rotationZ(m_angle) * m_points[i]; // rotates the cube forwards on the z axis
+			}
 		}
+		
 	}	
+
+	if (sf::Keyboard::X == t_event.key.code)
+	{
+		//about x axis
+		if (t_event.key.shift)
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				m_points[i] = MyMatrix3::rotationX(-m_angle) * m_points[i];  // rotates the cube backwards on the x axis
+			}
+		}
+		else
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				m_points[i] = MyMatrix3::rotationX(m_angle) * m_points[i]; // rotates the cube forwards on the x axis
+			}
+		}
+		
+	}
+
+	if (sf::Keyboard::Y == t_event.key.code)
+	{
+		//about y axis
+		if (t_event.key.shift)
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				m_points[i] = MyMatrix3::rotationY(-m_angle) * m_points[i]; // rotates the cube backwards on the y axis
+			}
+		}
+		else
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				m_points[i] = MyMatrix3::rotationY(m_angle) * m_points[i];  // rotates the cube forwards on the y axis
+			}
+		}
+	
+	}
+	if (sf::Keyboard::P == t_event.key.code)
+	{
+		printPos(); // prints the position
+	}
+
+	
+	
 }
 /// <summary>
 /// game update loop clear vertexarrays
@@ -123,13 +235,17 @@ void Game::update(const sf::Time t_deltaTime)
 {
 	m_edges.clear();
 	m_faces.clear();
+
+	setupText();
+
 	for (int i = 0; i < 6; i++)
 	{
 		if (checkFace(i))
 		{
 			showFace(i);
 		}
-	}	
+	}
+	
 }
 /// <summary>
 /// check if face is facing towards positive Z direction were camera is
@@ -141,6 +257,17 @@ void Game::update(const sf::Time t_deltaTime)
 /// <returns>true if pointing towards camera</returns>
 bool Game::checkFace(const int t_index)
 {
+	MyVector3 crossP = (m_points[m_cubeVertexs[t_index][2]] - m_points[m_cubeVertexs[t_index][0]]);
+	m_showFace[t_index] = false;
+
+	if ((m_points[m_cubeVertexs[t_index][3]] - m_points[m_cubeVertexs[t_index][0]]).crossProduct(crossP).z > 0) // checks the faces on the cube
+	{
+		m_showFace[t_index] = true;
+	}
+	else
+	{
+		m_showFace[t_index] = false;
+	}
 	return m_showFace[t_index];
 }
 
@@ -152,6 +279,25 @@ bool Game::checkFace(const int t_index)
 void Game::showFace(const int t_index)
 {
 	sf::Vector2f offset{ 200,200 }; // offset from origin	
+
+	for (int i = 0; i < 3; i++)
+	{
+		m_edges.append({m_points[m_cubeVertexs[t_index][i]] + offset, BLUE});
+		m_edges.append({ m_points[m_cubeVertexs[t_index][i + 1]] + offset, BLACK });
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_edges.append({ m_points[m_cubeVertexs[t_index][i]] + offset, BLACK });
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_faces.append({ m_points[m_cubeVertexs[t_index][i]] + offset, m_colours[t_index] });
+	}
+
+	m_edges.append({ m_points[m_cubeVertexs[t_index][0]] + offset, BLACK });
+	m_edges.append({ m_points[m_cubeVertexs[t_index][3]] + offset, BLACK });
 }
 
 /// <summary>
@@ -162,7 +308,13 @@ void Game::showFace(const int t_index)
 void Game::render()
 {
 	m_window.clear(WHITE);
+	for (int i = 0; i < 8; i++)
+	{
+		drawPoint(i);
+		m_window.draw(m_letter[i]);
+	}
 	m_window.draw(m_faces);
+	
 	m_window.draw(m_edges);
 	//...
 	m_window.draw(m_instructions);
@@ -179,7 +331,10 @@ void Game::render()
 /// <param name="t_index">0-7 which corner of cube</param>
 void Game::drawPoint(const int t_index)
 {
-	
+	sf::Vector2f offSet{ 200, 200 }; 
+	m_circle.setPosition(m_points[t_index] + offSet); // gets the different positions
+	m_circle.setFillColor(sf::Color::Black); // sets the fill colour of the ball
+	m_window.draw(m_circle); // draws the black balls
 }
 
 
