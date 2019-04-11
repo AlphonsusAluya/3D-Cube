@@ -1,6 +1,10 @@
 #include "Game.h"
 
-// don't forget to comment
+// Alphonsus Aluya
+// c00237736
+// date 11/4/2019
+// bugs: the co-ordinate prints twice
+// issues: none
 
 Game::Game()
 	: m_window{ sf::VideoMode{ 400, 440 }, "Lab9 Cube" },
